@@ -1,6 +1,7 @@
 #ifndef BINARYHEAP_H
 #define BINARYHEAP_H
 
+#include <functional>
 #include <list>
 #include <vector>
 
@@ -10,6 +11,13 @@ class BinaryHeap
 public:
 	BinaryHeap()
 		: m_values(std::vector<T>())
+		, m_lessFn([](T v1, T v2) -> bool { return v1 < v2; })
+	{
+	}
+
+	explicit BinaryHeap(std::function<bool(T v1, T v2)> lessFn)
+		: m_values(std::vector<T>())
+		, m_lessFn(lessFn)
 	{
 	}
 
@@ -20,7 +28,7 @@ public:
 		int curPos = m_values.size() - 1;
 		int parentPos = (curPos - 1) / 2;
 
-		while (curPos > 0 && m_values[parentPos] < m_values[curPos])
+		while (curPos > 0 && m_lessFn(m_values[parentPos], m_values[curPos]))
 		{
 			std::swap(m_values[parentPos], m_values[curPos]);
 
@@ -49,6 +57,7 @@ public:
 
 private:
 	std::vector<T> m_values;
+	std::function<bool(T v1, T v2)> m_lessFn;
 
 	void SiftUp(std::size_t curPos)
 	{
@@ -64,12 +73,12 @@ private:
 
 			auto largestPos = curPos;
 
-			if (leftPos < m_values.size() && m_values[largestPos] < m_values[leftPos])
+			if (leftPos < m_values.size() && m_lessFn(m_values[largestPos], m_values[leftPos]))
 			{
 				largestPos = leftPos;
 			}
 
-			if (rightPos < m_values.size() && m_values[largestPos] < m_values[rightPos])
+			if (rightPos < m_values.size() && m_lessFn(m_values[largestPos], m_values[rightPos]))
 			{
 				largestPos = rightPos;
 			}
