@@ -55,6 +55,11 @@ public:
 		SiftUp(0);
 	}
 
+	bool Empty() const
+	{
+		return m_values.empty();
+	}
+
 private:
 	std::vector<T> m_values;
 	std::function<bool(T v1, T v2)> m_lessFn;

@@ -6,4 +6,7 @@ set(CMAKE_CXX_STANDARD 20)
 add_executable(
         lab185
         src/main.cpp
-        src/lib/BinaryHeap.h)
+        src/lib/BinaryHeap.h
+        src/lib/WeightedGraph.h
+        src/lib/Deijkstra.h
+)
