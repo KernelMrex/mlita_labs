@@ -12,7 +12,7 @@ int main()
 	std::cin >> b;
 
 	// Умножаем A * B = C
-	// Permutation c = a * b;
+	Permutation c = a * b;
 
 	// Выводим результат
 	// std::cout << c << std::endl;
