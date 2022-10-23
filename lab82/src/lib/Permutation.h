@@ -1,7 +1,9 @@
 #ifndef PERMUTATION_H
 #define PERMUTATION_H
 
+#include <iostream>
 #include <istream>
+#include <list>
 #include <map>
 #include <sstream>
 #include <utility>
@@ -24,7 +26,7 @@ class Permutation
 		return in;
 	}
 
-	friend std::ostream& operator<< (std::ostream& out, Permutation& permutation)
+	friend std::ostream& operator<<(std::ostream& out, Permutation& permutation)
 	{
 		bool isFirst = true;
 		for (auto item : permutation.m_items)
@@ -62,6 +64,13 @@ public:
 		m_items.push_back(value);
 	}
 
+	[[nodiscard]] std::vector<Permutation> GetNextPermutations() const
+	{
+		std::vector<Permutation> results;
+		Permute(results, m_items, std::vector<int>());
+		return results;
+	}
+
 	Permutation operator*(const Permutation& y) const
 	{
 		if (m_items.size() != y.m_items.size())
@@ -81,6 +90,31 @@ public:
 
 private:
 	std::vector<int> m_items;
+
+	static void Permute(std::vector<Permutation>& result, std::vector<int> arr, const std::vector<int>& memo)
+	{
+		int cur;
+
+		for (int i = 0; i < arr.size(); i++)
+		{
+			cur = arr[i];
+			arr.erase(arr.begin() + i);
+
+			if (arr.empty())
+			{
+				std::vector<int> resultItem(memo);
+				resultItem.push_back(cur);
+				result.emplace_back(resultItem);
+			}
+
+			std::vector<int> newMemo(memo);
+			newMemo.push_back(cur);
+
+			Permute(result, arr, newMemo);
+
+			arr.insert(arr.begin() + i, cur);
+		}
+	}
 };
 
 #endif // PERMUTATION_H
