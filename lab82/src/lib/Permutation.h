@@ -24,6 +24,23 @@ class Permutation
 		return in;
 	}
 
+	friend std::ostream& operator<< (std::ostream& out, Permutation& permutation)
+	{
+		bool isFirst = true;
+		for (auto item : permutation.m_items)
+		{
+			if (!isFirst)
+			{
+				out << ' ';
+			}
+			isFirst = false;
+
+			out << item;
+		}
+
+		return out;
+	}
+
 public:
 	Permutation()
 		: m_items(std::vector<int>())

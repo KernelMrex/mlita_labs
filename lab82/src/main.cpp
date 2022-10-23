@@ -15,7 +15,7 @@ int main()
 	Permutation c = a * b;
 
 	// Выводим результат
-	// std::cout << c << std::endl;
+	std::cout << c << std::endl;
 
 	return EXIT_SUCCESS;
 }
