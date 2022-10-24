@@ -14,3 +14,10 @@ add_executable(
         src/main_permutation.cpp
         src/lib/Permutation.h
 )
+
+add_executable(
+        lab82_3
+        src/main_inversion.cpp
+        src/lib/Permutation.h
+        src/lib/InversionVector.h
+)

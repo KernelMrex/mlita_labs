@@ -59,6 +59,11 @@ public:
 		return m_items;
 	}
 
+	[[nodiscard]] std::size_t GetSize() const
+	{
+		return m_items.size();
+	}
+
 	void AddElement(int value)
 	{
 		m_items.push_back(value);
