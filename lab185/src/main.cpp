@@ -9,7 +9,9 @@ int main()
 
 	int amountOfCities, amountOfRoads, startCity, endCity;
 
-	WeightedGraph<int, int> weightedGraph;
+	WeightedGraph weightedGraph;
+
+	//WeightedGraph<int, int> weightedGraph;
 
 	std::cin >> amountOfCities >> amountOfRoads >> startCity >> endCity;
 	for (int i = 0; i < amountOfRoads; ++i)

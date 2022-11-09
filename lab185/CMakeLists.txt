@@ -9,4 +9,4 @@ add_executable(
         src/lib/BinaryHeap.h
         src/lib/WeightedGraph.h
         src/lib/Deijkstra.h
-)
+        src/lib/WeightedGraph.h)

@@ -1,138 +1,48 @@
-#ifndef WEIGHTED_GRAPH_H
-#define WEIGHTED_GRAPH_H
+#ifndef MLITA_LABS_LAB185_WEIGHTEDGRAPH_H
+#define MLITA_LABS_LAB185_WEIGHTEDGRAPH_H
 
-#include <algorithm>
-#include <optional>
-#include <unordered_set>
+#include <map>
+#include <vector>
 
-template <class VertexIndexType, class EdgeWeightType>
+//template <class int, class int>
 class WeightedGraph
 {
+	struct Transition
+	{
+		int toVertex;
+		int weight;
+	};
+
 public:
-	class WeightedEdge
-	{
-	public:
-		WeightedEdge(VertexIndexType fromVertex, VertexIndexType toVertex)
-			: m_fromVertex(fromVertex)
-			, m_toVertex(toVertex)
-		{
-		}
-
-		WeightedEdge(const WeightedEdge& other)
-			: m_fromVertex(other.m_fromVertex)
-			, m_toVertex(other.m_toVertex)
-			, m_weight(other.m_weight)
-		{
-		}
-
-		WeightedEdge(VertexIndexType fromVertex, VertexIndexType toVertex, EdgeWeightType weight)
-			: m_fromVertex(fromVertex)
-			, m_toVertex(toVertex)
-			, m_weight(weight)
-		{
-		}
-
-		[[nodiscard]] VertexIndexType getFromVertex() const
-		{
-			return m_fromVertex;
-		}
-
-		[[nodiscard]] VertexIndexType getToVertex() const
-		{
-			return m_toVertex;
-		}
-
-		[[nodiscard]] EdgeWeightType getWeight() const
-		{
-			return m_weight;
-		}
-
-		bool operator==(const WeightedEdge& other) const
-		{
-			return (m_fromVertex == other.m_fromVertex && m_toVertex == other.m_toVertex);
-		}
-
-		bool operator>(const WeightedEdge& other) const
-		{
-			return m_weight > other.getWeight();
-		}
-
-		bool operator<(const WeightedEdge& other) const
-		{
-			return m_weight < other.getWeight();
-		}
-
-		struct HashFunction
-		{
-			std::size_t operator()(const WeightedEdge& edge) const
-			{
-				std::size_t fromVertexHash = std::hash<VertexIndexType>()(edge.m_fromVertex);
-				std::size_t toVertexHash = std::hash<VertexIndexType>()(edge.m_toVertex) << 1;
-				return fromVertexHash ^ toVertexHash;
-			}
-		};
-
-	private:
-		VertexIndexType m_fromVertex;
-		VertexIndexType m_toVertex;
-		EdgeWeightType m_weight;
-	};
-
 	WeightedGraph()
-		: m_edges(){};
-
-	void AddEdge(VertexIndexType fromVertex, VertexIndexType toVertex, EdgeWeightType weight)
+		: m_verticesMap(std::unordered_map<int, std::vector<Transition>>())
 	{
-		m_edges.insert(WeightedEdge(fromVertex, toVertex, weight));
-	};
-
-	void RemoveEdge(VertexIndexType fromVertex, VertexIndexType toVertex)
-	{
-		m_edges.erase(WeightedEdge(fromVertex, toVertex));
-	};
-
-	WeightedEdge GetEdge(VertexIndexType fromVertex, VertexIndexType toVertex)
-	{
-		auto foundEdge = std::find(m_edges.begin(), m_edges.end(), WeightedEdge(fromVertex, toVertex));
-		if (foundEdge == m_edges.end())
-		{
-			throw std::runtime_error("Can not update not existing edge");
-		}
-		return *foundEdge;
 	}
 
-	void UpdateEdge(VertexIndexType fromVertex, VertexIndexType toVertex, EdgeWeightType weight)
+	void AddEdge(int fromVertex, int toVertex, int weight)
 	{
-		auto foundEdge = GetEdge(fromVertex, toVertex);
-		m_edges.insert(WeightedEdge(foundEdge.getFromVertex(), foundEdge.getToVertex(), weight));
-	};
-
-	std::optional<EdgeWeightType> GetDistanceBetweenRelatedVertices(VertexIndexType fromVertex, VertexIndexType toVertex) const
-	{
-		auto edge = m_edges.find(WeightedEdge(fromVertex, toVertex));
-		return edge != m_edges.end() ? (std::optional<EdgeWeightType>){ edge->getWeight() } : std::nullopt;
-	}
-
-	std::unordered_set<VertexIndexType> GetRelatedVertices(VertexIndexType fromVertex) const
-	{
-		std::unordered_set<VertexIndexType> relatedVertices;
-		for (auto edge : m_edges)
+		auto it = m_verticesMap.find(fromVertex);
+		if (it == m_verticesMap.end())
 		{
-			if (edge.getFromVertex() == fromVertex)
-			{
-				relatedVertices.insert(edge.getToVertex());
-			}
+			m_verticesMap.emplace(fromVertex, std::vector{Transition{.toVertex = toVertex, .weight=weight}});
+			return;
 		}
-		return relatedVertices;
+
+		it->second.emplace_back(Transition{.toVertex = toVertex, .weight=weight});
 	};
 
-	WeightedEdge FindMinEdge() const
+	std::vector<Transition> GetVertexTransitions(int fromVertex) const
 	{
-		return *std::min_element(m_edges.begin(), m_edges.end());
+		auto it = m_verticesMap.find(fromVertex);
+		if (it == m_verticesMap.end())
+		{
+			return std::vector<Transition>{};
+		}
+		return it->second;
 	}
 
 private:
-	std::unordered_set<WeightedEdge, typename WeightedEdge::HashFunction> m_edges{};
+	std::unordered_map<int, std::vector<Transition>> m_verticesMap;
 };
 
-#endif // WEIGHTED_GRAPH_H
+#endif // MLITA_LABS_LAB185_WEIGHTEDGRAPH_H

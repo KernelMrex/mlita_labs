@@ -22,7 +22,7 @@ static std::vector<int> BuildPath(std::vector<int> path, int endingVertex, int s
 }
 
 std::optional<std::pair<int, std::vector<int>>> Dijkstra(
-	const WeightedGraph<int, int>& graph,
+	const WeightedGraph& graph,
 	int amountOfVertices,
 	int startingVertex,
 	int endingVertex)
@@ -49,9 +49,10 @@ std::optional<std::pair<int, std::vector<int>>> Dijkstra(
 			continue;
 		}
 
-		for (auto toVertex : graph.GetRelatedVertices(fromVertex))
+		for (auto transition : graph.GetVertexTransitions(fromVertex))
 		{
-			auto edgeWeight = graph.GetDistanceBetweenRelatedVertices(fromVertex, toVertex).value();
+			auto toVertex = transition.toVertex;
+			auto edgeWeight = transition.weight;
 			if (distancesToVertices[toVertex] > distancesToVertices[fromVertex] + edgeWeight)
 			{
 				distancesToVertices[toVertex] = distancesToVertices[fromVertex] + edgeWeight;
